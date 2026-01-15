@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane style="-fx-background-color: #f0f4f8;"
+xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="grademanager.app.screen.StudentViewController">
+    
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #3b82f6; -fx-padding: 20;">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="Student Dashboard" textFill="white">
+                    <font>
+                        <Font name="System Bold" size="24" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="userInfoLabel" style="-fx-font-size: 14;" textFill="white" />
+                <Button onAction="#handleLogout" style="-fx-background-color: white; -fx-text-fill: #3b82f6; -fx-font-weight: bold;" text="Logout" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <Tab text="My Grades">
+                <VBox spacing="15" style="-fx-padding: 20;">
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <Label fx:id="studentInfoLabel" style="-fx-font-size: 18; -fx-font-weight: bold;" text="Student Information" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label text="Semester:" />
+                        <ComboBox fx:id="myGradesSemesterComboBox" />
+                    </HBox>
+                    
+                    <TableView fx:id="gradeTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="courseIdColumn" prefWidth="100" text="Course ID" />
+                            <TableColumn fx:id="courseNameColumn" prefWidth="200" text="Course Name" />
+                            <TableColumn fx:id="creditsColumn" prefWidth="70" text="Credits" />
+                            <TableColumn fx:id="midtermColumn" prefWidth="80" text="Midterm" />
+                            <TableColumn fx:id="finalColumn" prefWidth="80" text="Final" />
+                            <TableColumn fx:id="gpaColumn" prefWidth="70" text="GPA" />
+                        </columns>
+                        
+                        <contextMenu>
+                            <ContextMenu>
+                                <items>
+                                    <MenuItem text="Appeal Midterm Grade" onAction="#handleAppealMidterm"/>
+                                    <MenuItem text="Appeal Final Grade" onAction="#handleAppealFinal"/>
+                                </items>
+                            </ContextMenu>
+                        </contextMenu>
+                    </TableView>
+                    
+                    <HBox alignment="CENTER_RIGHT" style="-fx-padding: 10;">
+                        <Label fx:id="overallGPALabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #3b82f6;" text="Overall GPA: 0.00" />
+                    </HBox>
+                    <Label style="-fx-text-fill: grey; -fx-font-style: italic;" text="* Right-click on a row to appeal a grade." />
+                </VBox>
+            </Tab>
+
+            <Tab text="Register Course">
+                <VBox spacing="15" style="-fx-padding: 20;">
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Available Courses" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label text="Select Semester:" />
+                        <ComboBox fx:id="semesterComboBox" prefWidth="150.0" />
+                    </HBox>
+
+                    <TableView fx:id="availableCourseTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="avIdCol" prefWidth="60" text="ID" />
+                            <TableColumn fx:id="avCodeCol" prefWidth="100" text="Code" />
+                            <TableColumn fx:id="avNameCol" prefWidth="250" text="Name" />
+                            <TableColumn fx:id="avProfCol" prefWidth="150" text="Professor" />
+                            <TableColumn fx:id="avCreditsCol" prefWidth="60" text="Credits" />
+                            <TableColumn fx:id="avCapacityCol" prefWidth="80" text="Capacity" />
+                            <TableColumn fx:id="avEnrolledCol" prefWidth="80" text="Enrolled" />
+                        </columns>
+                    </TableView>
+
+                    <Button maxWidth="Infinity" onAction="#handleRegisterCourse" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" text="Register for Selected Course" />
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane style="-fx-background-color: #f0f4f8;"
+xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="grademanager.app.screen.AdminViewController">
+    
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #1e293b; -fx-padding: 20;">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="Admin Dashboard" textFill="white">
+                    <font>
+                        <Font name="System Bold" size="24" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="userInfoLabel" style="-fx-font-size: 14;" textFill="white" />
+                <Button onAction="#handleLogout" style="-fx-background-color: white; -fx-text-fill: #1e293b; -fx-font-weight: bold;" text="Logout" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <Tab text="User Management">
+                <HBox spacing="20" style="-fx-padding: 20;">
+                    <VBox prefWidth="300" spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                        <Label fx:id="createUserLabel" style="-fx-font-size: 18; -fx-font-weight: bold;" text="Create New User" />
+                        
+                        <VBox spacing="5">
+                            <Label text="Username:" />
+                            <TextField fx:id="newUsernameField" promptText="Username" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Password:" />
+                            <PasswordField fx:id="newPasswordField" promptText="Password" />
+                        </VBox>
+
+                        <VBox spacing="5">
+                            <Label text="Real Name:" />
+                            <TextField fx:id="realNameField" promptText="Full Name" />
+                        </VBox>
+                        
+                        <VBox fx:id="studentIdBox" spacing="5">
+                            <Label text="Student ID:" />
+                            <TextField fx:id="newStudentIdField" promptText="e.g. 2024001" />
+                        </VBox>
+                        
+                        <Button maxWidth="Infinity" onAction="#handleCreateUser" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;" text="Create Account" />
+                    </VBox>
+                    
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Existing Users" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label text="Filter Role:" />
+                            <RadioButton fx:id="studentRadio" selected="true" text="Student">
+                                <toggleGroup>
+                                    <ToggleGroup fx:id="userRoleGroup" />
+                                </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="profRadio" text="Professor" toggleGroup="$userRoleGroup" />
+                        </HBox>
+
+                        <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="usernameCol" prefWidth="150" text="Username" />
+                                <TableColumn fx:id="realNameCol" prefWidth="250" text="Real Name" />
+                            </columns>
+                        </TableView>
+                        <Button onAction="#handleDeleteUser" style="-fx-background-color: #ef4444; -fx-text-fill: white;" text="Delete Selected User" />
+                    </VBox>
+                </HBox>
+            </Tab>
+
+            <Tab text="Course Management">
+                <HBox spacing="20" style="-fx-padding: 20;">
+                    <VBox prefWidth="300.0" spacing="10.0" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                        <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Add New Class" />
+                        
+                        <VBox spacing="5">
+                            <Label text="Course ID:" />
+                            <TextField fx:id="courseIdField" promptText="" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Course Name:" />
+                            <TextField fx:id="courseNameField" promptText="" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Class Code:" />
+                            <TextField fx:id="classCodeField" promptText="" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Credits:" />
+                            <TextField fx:id="creditsField" promptText="" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Professor:" />
+                            <ComboBox fx:id="professorComboBox" editable="true" maxWidth="Infinity" promptText="Type to search..." />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Capacity:" />
+                            <TextField fx:id="capacityField" promptText="e.g. 60" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label text="Midterm Weight (0.0 - 1.0):" />
+                            <TextField fx:id="midtermWeightField" promptText="Default 0.4" />
+                        </VBox>
+                        
+                        <Button maxWidth="Infinity" onAction="#handleAddCourse" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold;" text="Add Class" />
+                    </VBox>
+                    
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Current Classes" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label text="Select Semester:" />
+                            <ComboBox fx:id="semesterComboBox" prefWidth="150.0" />
+                        </HBox>
+
+                        <TableView fx:id="courseTable" VBox.vgrow="ALWAYS">
+                             <columns>
+                                <TableColumn fx:id="courseIdCol" prefWidth="62.0" text="Course ID" />
+                                <TableColumn fx:id="courseNameCol" prefWidth="188.0" text="Course Name" />
+                                <TableColumn fx:id="classCodeCol" prefWidth="80" text="Class Code" />
+                                <TableColumn fx:id="classProfCol" prefWidth="100" text="Professor" />
+                                <TableColumn fx:id="courseCreditsCol" prefWidth="60" text="Credits" />
+                                <TableColumn fx:id="capacityCol" prefWidth="60" text="Capacity" />
+                            </columns>
+                        </TableView>
+                        <Button onAction="#handleDeleteCourse" style="-fx-background-color: #ef4444; -fx-text-fill: white;" text="Delete Selected Class" />
+                    </VBox>
+                </HBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>
