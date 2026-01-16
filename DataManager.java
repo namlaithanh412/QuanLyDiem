@@ -28,7 +28,11 @@ public class DataManager {
     }
 
     public void saveData() {
-        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(DATA_FILE))) {
+        File tempFile = new File(DATA_FILE + ".tmp");
+        File dataFile = new File(DATA_FILE);
+
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(tempFile))) {
+
             // Save Courses
             out.writeInt(courses.size());
             for (Course c : courses) {
@@ -39,7 +43,7 @@ public class DataManager {
                 out.writeInt(c.getCredits());
                 out.writeInt(c.getSemester());
                 out.writeInt(c.getCapacity());
-                out.writeDouble(c.getMidtermWeight()); // Save Weight
+                out.writeDouble(c.getMidtermWeight());
             }
 
             // Save Students
@@ -48,7 +52,7 @@ public class DataManager {
                 out.writeInt(s.getId());
                 out.writeUTF(s.getName());
                 out.writeUTF(s.getUsername());
-                
+
                 out.writeInt(s.getEnrollments().size());
                 for (Enrollment e : s.getEnrollments()) {
                     out.writeUTF(e.getCourseId());
@@ -79,12 +83,21 @@ public class DataManager {
                 out.writeUTF(a.getReason());
                 out.writeUTF(a.getStatus());
             }
-            
+
+            out.flush();
+
+            if (dataFile.exists()) {
+                dataFile.delete();
+            }
+            tempFile.renameTo(dataFile);
+
             System.out.println("Data saved successfully.");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void loadData() {
         File file = new File(DATA_FILE);
