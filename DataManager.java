@@ -28,10 +28,7 @@ public class DataManager {
     }
 
     public void saveData() {
-        File tempFile = new File(DATA_FILE + ".tmp");
-        File dataFile = new File(DATA_FILE);
-
-        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(tempFile))) {
+        try (DataOutputStream out = new DataOutputStream(new FileOutputStream(DATA_FILE))) {
 
             // Save Courses
             out.writeInt(courses.size());
@@ -43,7 +40,7 @@ public class DataManager {
                 out.writeInt(c.getCredits());
                 out.writeInt(c.getSemester());
                 out.writeInt(c.getCapacity());
-                out.writeDouble(c.getMidtermWeight());
+                out.writeDouble(c.getMidtermWeight()); // Save Weight
             }
 
             // Save Students
@@ -84,35 +81,33 @@ public class DataManager {
                 out.writeUTF(a.getStatus());
             }
 
-            out.flush();
-
-            if (dataFile.exists()) {
-                dataFile.delete();
-            }
-            tempFile.renameTo(dataFile);
-
             System.out.println("Data saved successfully.");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
     private void loadData() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
             createDefaultAdmin();
-            return; 
+            return;
         }
 
         try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+
             // Load Courses
             int courseCount = in.readInt();
             for (int i = 0; i < courseCount; i++) {
                 courses.add(new Course(
-                    in.readUTF(), in.readUTF(), in.readInt(), in.readUTF(), 
-                    in.readInt(), in.readInt(), in.readInt(), in.readDouble() // Load Weight
+                        in.readUTF(),
+                        in.readUTF(),
+                        in.readInt(),
+                        in.readUTF(),
+                        in.readInt(),
+                        in.readInt(),
+                        in.readInt(),
+                        in.readDouble() // Load Weight
                 ));
             }
 
@@ -120,14 +115,19 @@ public class DataManager {
             int studentCount = in.readInt();
             for (int i = 0; i < studentCount; i++) {
                 Student student = new Student(
-                    in.readInt(), in.readUTF(), in.readUTF()
+                        in.readInt(),
+                        in.readUTF(),
+                        in.readUTF()
                 );
-                
+
                 int enrollmentCount = in.readInt();
                 for (int j = 0; j < enrollmentCount; j++) {
                     student.getEnrollments().add(new Enrollment(
-                        student.getId(), in.readUTF(), in.readUTF(), 
-                        in.readDouble(), in.readDouble()
+                            student.getId(),
+                            in.readUTF(),
+                            in.readUTF(),
+                            in.readDouble(),
+                            in.readDouble()
                     ));
                 }
                 students.add(student);
@@ -141,7 +141,12 @@ public class DataManager {
                     String password = in.readUTF();
                     String realName = in.readUTF();
                     String roleStr = in.readUTF();
-                    users.add(new User(username, password, realName, User.UserRole.valueOf(roleStr)));
+                    users.add(new User(
+                            username,
+                            password,
+                            realName,
+                            User.UserRole.valueOf(roleStr)
+                    ));
                 }
             }
 
@@ -150,12 +155,18 @@ public class DataManager {
                 int appealCount = in.readInt();
                 for (int i = 0; i < appealCount; i++) {
                     appeals.add(new Appeal(
-                        in.readInt(), in.readInt(), in.readUTF(), in.readUTF(), 
-                        in.readUTF(), in.readUTF(), in.readUTF(), in.readUTF()
+                            in.readInt(),
+                            in.readInt(),
+                            in.readUTF(),
+                            in.readUTF(),
+                            in.readUTF(),
+                            in.readUTF(),
+                            in.readUTF(),
+                            in.readUTF()
                     ));
                 }
             }
-            
+
             if (users.stream().noneMatch(u -> u.getRole() == User.UserRole.ADMIN)) {
                 createDefaultAdmin();
             }
@@ -168,27 +179,52 @@ public class DataManager {
 
     private void createDefaultAdmin() {
         if (users.stream().noneMatch(u -> u.getUsername().equals("admin"))) {
-            users.add(new User("admin", "admin123", "Administrator", User.UserRole.ADMIN));
+            users.add(new User(
+                    "admin",
+                    "admin123",
+                    "Administrator",
+                    User.UserRole.ADMIN
+            ));
         }
     }
 
-    public ObservableList<Course> getCourses() { return courses; }
-    public ObservableList<Student> getStudents() { return students; }
-    public ObservableList<User> getUsers() { return users; }
-    public ObservableList<Appeal> getAppeals() { return appeals; }
-    
+    public ObservableList<Course> getCourses() {
+        return courses;
+    }
+
+    public ObservableList<Student> getStudents() {
+        return students;
+    }
+
+    public ObservableList<User> getUsers() {
+        return users;
+    }
+
+    public ObservableList<Appeal> getAppeals() {
+        return appeals;
+    }
+
     public Course getCourseById(String id) {
-        return courses.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+        return courses.stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
-    
+
     public Student getStudentByUsername(String username) {
-        return students.stream().filter(s -> s.getUsername().equals(username)).findFirst().orElse(null);
+        return students.stream()
+                .filter(s -> s.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
-    
+
     public User getUserByUsername(String username) {
-        return users.stream().filter(u -> u.getUsername().equals(username)).findFirst().orElse(null);
+        return users.stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
-    
+
     public long getEnrolledCount(String courseId) {
         return students.stream()
                 .flatMap(s -> s.getEnrollments().stream())
