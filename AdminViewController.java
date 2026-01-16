@@ -127,18 +127,48 @@ public class AdminViewController {
         if (studentRadio.isSelected()) {
             try {
                 int sid = Integer.parseInt(newStudentIdField.getText().trim());
-                dataManager.getUsers().add(new User(username, password, realName, User.UserRole.STUDENT));
-                if (dataManager.getStudents().stream().noneMatch(s -> s.getId() == sid)) {
-                    dataManager.getStudents().add(new Student(sid, realName, username));
+
+                if (dataManager.getUserByUsername(username) != null) {
+                    showAlert("Error", "Username already exists.");
+                    return;
                 }
+
+                if (dataManager.getStudents().stream().anyMatch(s -> s.getId() == sid)) {
+                    showAlert("Error", "Student ID already exists.");
+                    return;
+                }
+
+                dataManager.getUsers().add(
+                    new User(username, password, realName, User.UserRole.STUDENT)
+                );
+                dataManager.getStudents().add(
+                    new Student(sid, realName, username)
+                );
+
                 showAlert("Success", "Student Created.");
                 newStudentIdField.clear();
-            } catch (Exception e) { showAlert("Error", "Invalid Student ID."); return; }
-        } else {
-            dataManager.getUsers().add(new User(username, password, realName, User.UserRole.PROFESSOR));
-            showAlert("Success", "Professor Created.");
+
+            } catch (Exception e) {
+                showAlert("Error", "Invalid Student ID.");
+            }
         }
-        newUsernameField.clear(); newPasswordField.clear(); realNameField.clear();
+        else {
+            if (dataManager.getUserByUsername(username) != null) {
+                showAlert("Error", "Username already exists.");
+                return;
+            }
+
+            dataManager.getUsers().add(
+                new User(username, password, realName, User.UserRole.PROFESSOR)
+            );
+
+            showAlert("Success", "Professor Created.");
+
+            // Clear form
+            newUsernameField.clear();
+            newPasswordField.clear();
+            realNameField.clear();
+        }
     }
     @FXML private void handleDeleteUser() {
         User u = userTable.getSelectionModel().getSelectedItem();
@@ -166,6 +196,19 @@ public class AdminViewController {
             int code = Integer.parseInt(codeStr);
             int credits = Integer.parseInt(creditsStr);
             int capacity = Integer.parseInt(capStr);
+            
+            boolean classCodeExists = dataManager.getCourses().stream()
+                    .anyMatch(c -> c.getCode() == code && c.getSemester() == selectedSemester);
+
+            if (classCodeExists) {
+                showAlert("Error", "Class code already exists.");
+                return;
+            }
+
+            if (dataManager.getCourseById(id) != null) {
+                showAlert("Error", "Course ID exists.");
+                return;
+            }
             
             double weight = 0.4; // Default
             if (!weightStr.isEmpty()) {
